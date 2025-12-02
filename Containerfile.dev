@@ -1,0 +1,18 @@
+# Start from the official Kali rolling image
+FROM docker.io/debian:testing-slim
+
+# Set environment
+ENV TZ="Europe/Copenhagen"
+
+WORKDIR /builder
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        git \
+        ansible \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Default command to keep the container running
+CMD ["sleep", "infinity"]

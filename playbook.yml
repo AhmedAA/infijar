@@ -1,0 +1,49 @@
+---
+- name: Build Offensive Security Container Image
+  hosts: localhost
+  connection: local
+
+  vars:
+    container: false
+
+  tasks:
+    - name: Install common offsec
+      ansible.builtin.include_role:
+        name: infijar.offsec.common
+
+    - name: Install wordlists
+      ansible.builtin.include_role:
+        name: infijar.offsec.wordlists
+
+    - name: Install cracking offsec
+      ansible.builtin.include_role:
+        name: infijar.offsec.cracking
+
+    - name: Install Network Security offsec
+      ansible.builtin.include_role:
+        name: infijar.offsec.netsec
+      when: build_netsec is defined and build_netsec | bool
+
+    - name: Install Application Security offsec
+      ansible.builtin.include_role:
+        name: infijar.offsec.appsec
+      when: build_appsec is defined and build_appsec | bool
+
+  post_tasks:
+      - name: Compile shell history from snippets
+        ansible.builtin.assemble:
+          src: "{{ ansible_env.HOME }}/.zsh_history.d"
+          dest: "{{ ansible_env.HOME }}/.zsh_history"
+          mode: '0600'
+
+      - name: Remove build dependencies to save space
+        ansible.builtin.include_role:
+          name: infijar.offsec.common
+          tasks_from: cleanup
+        when: container | bool
+
+      - name: Run Post-Install Cleanup
+        ansible.builtin.include_role:
+          name: infijar.offsec.common
+          tasks_from: post_install
+        when: container | bool
