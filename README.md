@@ -30,6 +30,7 @@ docker build --build-arg "NETSEC=true" --build-arg "APPSEC=true" --build-arg "BU
 sudo podman run -it \
   --net=host \
   --cap-add=NET_ADMIN \
+  --cap-add=NET_RAW \
   --device /dev/net/tun:/dev/net/tun \
   -v /path/to/your/config.ovpn:/root/my-vpn.ovpn:z \
   -e VNC_PASSWORD=your-secret-password \
@@ -47,6 +48,7 @@ xhost +local:root
 
 sudo podman run -it --rm \
   --net=host \
+  --cap-add=NET_RAW \
   --env DISPLAY=$DISPLAY \
   --volume /tmp/.X11-unix:/tmp/.X11-unix \
   --security-opt label=disable \
