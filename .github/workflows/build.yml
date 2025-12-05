@@ -1,0 +1,44 @@
+name: Build and Push Infijar
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Log in to the Container registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Image with Podman
+        run: |
+          podman build \
+            --build-arg "NETSEC=true" \
+            --build-arg "APPSEC=true" \
+            --build-arg "BURP_COMMUNITY=true" \
+            --build-arg "BURP_PRO=false" \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
+            -f Containerfile .
+
+      - name: Push Image to GHCR
+        run: |
+          podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
