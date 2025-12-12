@@ -8,6 +8,7 @@ WORKDIR /builder
 
 ARG NETSEC=false
 ARG APPSEC=false
+ARG FORENSICS=false
 ARG BURP_COMMUNITY=true
 ARG BURP_PRO=false
 
@@ -32,6 +33,7 @@ RUN ansible-playbook playbook.yml \
     -e "desktop=true" \
     -e "build_netsec=${NETSEC}" \
     -e "build_appsec=${APPSEC}" \
+    -e "build_forensics=${FORENSICS}}" \
     -e "burp_community=${BURP_COMMUNITY}" \
     -e "burp_pro=${BURP_PRO}"
 

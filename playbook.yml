@@ -29,6 +29,11 @@
         name: infijar.offsec.appsec
       when: build_appsec is defined and build_appsec | bool
 
+    - name: Install Application Security offsec
+      ansible.builtin.include_role:
+        name: infijar.offsec.forensics
+      when: build_forensics is defined and build_forensics | bool
+
   post_tasks:
       - name: Compile shell history from snippets
         ansible.builtin.assemble:
