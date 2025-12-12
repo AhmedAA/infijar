@@ -47,6 +47,7 @@ jobs:
           podman build \
             --build-arg "NETSEC=true" \
             --build-arg "APPSEC=true" \
+            --build-arg "FORENSICS=true" \
             --build-arg "BURP_COMMUNITY=true" \
             --build-arg "BURP_PRO=false" \
             -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
